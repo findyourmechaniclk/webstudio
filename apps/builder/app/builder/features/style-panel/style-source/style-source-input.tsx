@@ -337,7 +337,7 @@ const matchOrSuggestToCreate = (
   const matched = matchSorter(items, search, {
     keys: [itemToString],
   });
-  const order: ItemSource[] = ["token"];
+  const order: ItemSource[] = ["tag", "token"];
   matched.sort((leftItem, rightItem) => {
     return order.indexOf(leftItem.source) - order.indexOf(rightItem.source);
   });
@@ -346,7 +346,7 @@ const matchOrSuggestToCreate = (
     itemToString(matched[0]).toLocaleLowerCase() !==
       search.toLocaleLowerCase().trim()
   ) {
-    matched.unshift({
+    matched.splice(matched[0]?.source === "tag" ? 1 : 0, 0, {
       id: newItemId,
       label: search.trim(),
       disabled: false,
@@ -428,6 +428,7 @@ export const StyleSourceInput = (
   });
 
   let hasNewTokenItem = false;
+  let hasTagTokenItem = false;
   let hasGlobalTokenItem = false;
 
   const states = props.componentStates ?? [];
@@ -511,11 +512,17 @@ export const StyleSourceInput = (
                   }
 
                   let label = null;
+                  if (item.source === "tag" && hasTagTokenItem === false) {
+                    hasTagTokenItem = true;
+                    label = <ComboboxLabel>Tag tokens</ComboboxLabel>;
+                  }
                   if (item.source === "token" && hasGlobalTokenItem === false) {
                     hasGlobalTokenItem = true;
                     label = (
                       <>
-                        {hasNewTokenItem && <ComboboxSeparator />}
+                        {(hasNewTokenItem || hasTagTokenItem) && (
+                          <ComboboxSeparator />
+                        )}
                         <ComboboxLabel>Global tokens</ComboboxLabel>
                       </>
                     );
