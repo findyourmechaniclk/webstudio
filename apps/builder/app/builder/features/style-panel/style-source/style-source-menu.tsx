@@ -258,6 +258,7 @@ type StyleSourceMenuProps = {
   onSelect?: (itemSelector: ItemSelector) => void;
   onEdit?: (itemId: IntermediateItem["id"]) => void;
   onDuplicate?: (itemId: IntermediateItem["id"]) => void;
+  onCopy?: (itemId: IntermediateItem["id"]) => void;
   onToggleLock?: (itemId: IntermediateItem["id"], locked: boolean) => void;
   onConvertToToken?: (itemId: IntermediateItem["id"]) => void;
   onDisable?: (itemId: IntermediateItem["id"]) => void;
@@ -367,6 +368,17 @@ export const StyleSourceMenu = (props: StyleSourceMenuProps) => {
             onSelect={() => props.onDuplicate?.(props.item.id)}
           >
             Duplicate
+          </DropdownMenuItem>
+        )}
+        {props.item.source === "token" && (
+          <DropdownMenuItem
+            onFocus={() => {
+              setHighlightedSelector(undefined);
+              setHighlightedAction(undefined);
+            }}
+            onSelect={() => props.onCopy?.(props.item.id)}
+          >
+            Copy
           </DropdownMenuItem>
         )}
         {props.item.source === "token" && (
